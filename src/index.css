@@ -27,21 +27,21 @@ input,textarea{
     height:20px;
     line-height:20px;
     font-size:20px;
-    border-bottom:solid 2px #b3b2ca;
+    border-bottom:solid 2px cd #dd570a;
     transition:all .23s ease-in
 }
 .login-form input:focus{
-    border-bottom:solid 2px #5d5d8a;
+    border-bottom:solid 2px #ff0000;
     outline:none
 }
 .login-form .error{
     text-align:center;
     margin:5px 0;
     padding:5px 10px;
-    color:#c92c43
+    color:#ff0026
 }
 .container{
-    color:#cac8ee;
+    color:#9c9c9c;
     display:flex;
     flex-direction:row;
     align-items:flex-start;
@@ -111,7 +111,7 @@ input,textarea{
 #side-bar .search .plus::after,#side-bar .search .plus::before{
     content:'';
     position:absolute;
-    background:#b3b2ca
+    background:#c5c5c5
 }
 #side-bar .search .plus::after{
     width:16px;
@@ -126,7 +126,7 @@ input,textarea{
 }
 #side-bar .users{
     overflow-y:scroll;
-    background:#3e3e5e;
+    background:#3e3e5e; 
     flex-grow:1
 }
 #side-bar .users::-webkit-scrollbar-track{
@@ -295,7 +295,7 @@ input,textarea{
     border-radius:5px;
     border-top-left-radius:0;
     box-sizing:border-box;
-    color:#b3b2ca;
+    color:#c2c2c2;
     height:100%;
     padding:10px 15px;
     position:relative

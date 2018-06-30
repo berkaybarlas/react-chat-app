@@ -8,5 +8,5 @@ module.exports = {
     TYPING:"TYPING",
     VERIFY_USER:"VERIFY_USER",
     LOGOUT:"LOGOUT",
-    SINGIN:"SINGIN",
+    PRIVATE_MESSAGE:"PRIVATE_MESSAGE",
 }
