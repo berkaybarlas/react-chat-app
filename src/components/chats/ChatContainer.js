@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import SideBar from '../sidebar/SideBar'
-import { COMMUNITY_CHAT, MESSAGE_SENT, MESSAGE_RECIEVED, TYPING,PRIVATE_MESSAGE } from '../../Events'
+import { COMMUNITY_CHAT, MESSAGE_SENT, MESSAGE_RECIEVED, 
+				TYPING, PRIVATE_MESSAGE, USER_CONNECTED, USER_DISCONNECTED,
+				NEW_CHAT_USER } from '../../Events'
 import ChatHeading from './ChatHeading'
 import Messages from '../messages/Messages'
 import MessageInput from '../messages/MessageInput'
-
+import { values, difference, differenceBy } from 'lodash'
 
 export default class ChatContainer extends Component {
 	constructor(props) {
@@ -14,25 +16,62 @@ export default class ChatContainer extends Component {
 		  chats:[],
 		  users:[],
 	  	activeChat:null
-	  };
+	  }
 	}
 
 	componentDidMount() {
 		const { socket } = this.props
 		this.initSocket(socket)
 	}
+	
+	componentWillUnmount() {
+		const { socket } = this.props
+		socket.off(PRIVATE_MESSAGE)
+		socket.off(USER_CONNECTED)
+		socket.off(USER_DISCONNECTED)
+		socket.off(NEW_CHAT_USER)
+	}
+	
 	initSocket(socket){
-		const{ user } = this.props
-		socket.emit(COMMUNITY_CHAT,this.resetChat);
-		socket.on(PRIVATE_MESSAGE,this.addChat);
-		socket.on('connect',()=>{
-			socket.emit(COMMUNITY_CHAT,this.resetChat)
+		socket.emit(COMMUNITY_CHAT, this.resetChat)
+		socket.on(PRIVATE_MESSAGE, this.addChat)
+		socket.on('connect', ()=>{
+			socket.emit(COMMUNITY_CHAT, this.resetChat)
 		})
+		socket.on(USER_CONNECTED, (users)=>{
+			this.setState({ users: values(users) })
+		})
+		socket.on(USER_DISCONNECTED, (users)=>{
+			const removedUsers = differenceBy( this.state.users, values(users), 'id')
+			this.removeUsersFromChat(removedUsers)
+			this.setState({ users: values(users) })			
+		})
+		socket.on(NEW_CHAT_USER, this.addUserToChat)
 	}
 
-	sendOpenPrivateMessage = (reciever)=>{
-		const { socket,user } = this.props
-		socket.emit(PRIVATE_MESSAGE,{reciever,sender:user.name}) 
+	sendOpenPrivateMessage = (reciever) => {
+		const { socket, user } = this.props
+		const { activeChat } = this.state
+		socket.emit(PRIVATE_MESSAGE, {reciever, sender:user.name, activeChat})
+
+	}
+	addUserToChat = ({ chatId, newUser }) => {
+		const { chats } = this.state
+		const newChats = chats.map( chat => {
+			if(chat.id === chatId){
+				return Object.assign({}, chat, { users: [ ...chat.users, newUser ] })
+			}
+			return chat
+		})
+		this.setState({ chats:newChats })
+	}
+	removeUsersFromChat = removedUsers => {
+		const { chats } = this.state
+		const newChats = chats.map( chat => {
+			let newUsers = difference( chat.users, removedUsers.map( u => u.name ) )
+				return Object.assign({}, chat, { users: newUsers })
+		})
+		this.setState({ chats: newChats })
 	}
 
 	resetChat = (chat)=>{
@@ -40,7 +79,6 @@ export default class ChatContainer extends Component {
 	}
 
 	addChat = (chat, reset = false)=>{
-		console.log(chat)
 		const { socket } = this.props
 		const { chats } = this.state
 
@@ -53,7 +91,6 @@ export default class ChatContainer extends Component {
 		socket.on(typingEvent, this.updateTypingInChat(chat.id))
 		socket.on(messageEvent, this.addMessageToChat(chat.id))
 	}
-
 
 	addMessageToChat = (chatId)=>{
 		return message => {
@@ -68,7 +105,6 @@ export default class ChatContainer extends Component {
 		}
 	}
 
-	
 	updateTypingInChat = (chatId) =>{
 		return ({isTyping, user})=>{
 			if(user !== this.props.user.name){
@@ -90,21 +126,11 @@ export default class ChatContainer extends Component {
 		}
 	}
 
-	/*
-	*	Adds a message to the specified chat
-	*	@param chatId {number}  The id of the chat to be added to.
-	*	@param message {string} The message to be added to the chat.
-	*/
 	sendMessage = (chatId, message)=>{
 		const { socket } = this.props
 		socket.emit(MESSAGE_SENT, {chatId, message} )
 	}
-
-	/*
-	*	Sends typing status to server.
-	*	chatId {number} the id of the chat being typed in.
-	*	typing {boolean} If the user is typing still or not.
-	*/
+	
 	sendTyping = (chatId, isTyping)=>{
 		const { socket } = this.props
 		socket.emit(TYPING, {chatId, isTyping})
