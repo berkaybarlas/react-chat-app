@@ -4,14 +4,14 @@ const http = require("http")
 const socketIo = require("socket.io")
 const server = http.createServer(app)
 
-const io = module.exports.io = socketIo(server)
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 
 server.listen(PORT,()=>{
 	console.log("Listening to port: " + PORT )
 })
 
+const io = module.exports.io = socketIo(server)
 
 const SocketManager = require('./SocketManager')
 

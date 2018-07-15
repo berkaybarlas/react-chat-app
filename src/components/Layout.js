@@ -4,7 +4,7 @@ import { USER_CONNECTED, LOGOUT,VERIFY_USER } from '../Events'
 import LoginForm from './LoginForm'
 import ChatContainer from './chats/ChatContainer'
 
-const socketUrl = "http://localhost:3232"
+const socketUrl = "http://localhost:3231"
 const socketUrlServer = "/"
 export default class Layout extends Component {
 	
