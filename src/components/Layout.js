@@ -4,7 +4,8 @@ import { USER_CONNECTED, LOGOUT,VERIFY_USER } from '../Events'
 import LoginForm from './LoginForm'
 import ChatContainer from './chats/ChatContainer'
 
-const socketUrl = "/"
+const socketUrl = "http://localhost:3232"
+const socketUrlServer = "/"
 export default class Layout extends Component {
 	
 	constructor(props) {
@@ -20,7 +21,7 @@ export default class Layout extends Component {
 		this.initSocket()
 	}
 	initSocket = ()=>{
-		const socket = io(socketUrl)
+		const socket = io(socketUrlServer)
 
 		socket.on('connect', ()=>{
 			if(this.state.user){
