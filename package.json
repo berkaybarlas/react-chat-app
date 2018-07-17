@@ -16,9 +16,10 @@
   },
   "scripts": {
     "start": "node src/server/index.js",
-    "dev": "concurrently 'npm run react' 'npm run server'",
+    "dev": "concurrently 'npm run react' 'npm run localServer'",
     "react": "react-scripts start",
     "server": "nodemon src/server/index.js",
+    "localServer": "nodemon src/server/indexLocal.js",
     "build": "react-scripts build",
     "styles": "node-sass --output-style compressed --include-path scss src/styles/index.scss src/index.css",
     "styles:w": "nodemon -e scss -x \"npm run styles\"",

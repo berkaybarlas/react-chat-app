@@ -1,4 +1,4 @@
-const io = require('./index.js').io
+const io = require('./indexLocal.js').io
 
 const { VERIFY_USER, USER_CONNECTED, USER_DISCONNECTED, 
 		LOGOUT, COMMUNITY_CHAT, MESSAGE_RECIEVED, MESSAGE_SENT,

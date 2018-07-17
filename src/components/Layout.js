@@ -21,7 +21,7 @@ export default class Layout extends Component {
 		this.initSocket()
 	}
 	initSocket = ()=>{
-		const socket = io(socketUrlServer)
+		const socket = io(socketUrl)
 
 		socket.on('connect', ()=>{
 			if(this.state.user){
